@@ -7,6 +7,12 @@
 # @Desc    :
 from time import time
 
+import torch
+from matplotlib import pyplot as plt
+from torch.utils.data import DataLoader
+from torchvision import datasets
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def time_cost(func):
     """
@@ -29,3 +35,32 @@ def time_cost(func):
         return result
 
     return wrapper
+
+
+def show_sample(train_dataset):
+    num_of_images = 40
+    for index in range(1, num_of_images + 1):
+        plt.subplot(4, 10, index)
+        plt.axis('off')
+        plt.imshow(train_dataset.data[index], cmap='gray_r')
+    plt.show()
+
+
+def mnist_dataset(transform, batch_size=64):
+    # 如果设置 download=True 下载失败可以按照 data/tips.txt 网址下载放入到 data/MNIST/raw/
+    train_dataset = datasets.MNIST(root='./data/',
+                                   train=True,
+                                   download=False,
+                                   transform=transform)
+    train_loader = DataLoader(train_dataset,
+                              shuffle=True,
+                              batch_size=batch_size)
+    test_dataset = datasets.MNIST(root='./data/',
+                                  train=False,
+                                  download=False,
+                                  transform=transform)
+    test_loader = DataLoader(test_dataset,
+                             shuffle=False,
+                             batch_size=batch_size)
+
+    return train_dataset, test_dataset, train_loader, test_loader

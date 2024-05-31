@@ -8,53 +8,24 @@ import matplotlib.pyplot as plt
 import torch
 from torch import nn, optim, autocast
 from torch.cuda.amp import GradScaler
-from torch.utils.data import DataLoader
-from torchvision import datasets
 from torchvision import transforms
 
-from utils import time_cost
+from utils import time_cost, show_sample, mnist_dataset, device
 
 # Use CUDA + GradScaler + autocast + batch_size:64
 # Function took 5m 23s to execute.
 # Model Accuracy =:0.9912
 
 # ====================== Lord Dataset ======================
-batch_size = 64
+# 初始化梯度尺度器
+scaler = GradScaler()
+
 transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.5,), (0.5,))
 ])
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# 初始化梯度尺度器
-scaler = GradScaler()
-
-# 如果设置 download=True 下载失败可以按照 data/tips.txt 网址下载放入到 data/MNIST/raw/
-train_dataset = datasets.MNIST(root='./data/',
-                               train=True,
-                               download=False,
-                               transform=transform)
-train_loader = DataLoader(train_dataset,
-                          shuffle=True,
-                          batch_size=batch_size)
-test_dataset = datasets.MNIST(root='./data/',
-                              train=False,
-                              download=False,
-                              transform=transform)
-test_loader = DataLoader(test_dataset,
-                         shuffle=False,
-                         batch_size=batch_size)
-
-
-def show_sample():
-    num_of_images = 40
-    for index in range(1, num_of_images + 1):
-        plt.subplot(4, 10, index)
-        plt.axis('off')
-        plt.imshow(train_dataset.data[index], cmap='gray_r')
-    plt.show()
-
-
+train_dataset, _, train_loader, test_loader = mnist_dataset(transform, 64)
 # ====================== Define Module Net ======================
 
 
@@ -162,6 +133,6 @@ def cnn_test():
 
 
 if __name__ == '__main__':
-    show_sample()
+    show_sample(train_dataset)
     cnn_train(30)
     cnn_test()
