@@ -12,9 +12,6 @@ from torchvision import transforms
 
 from utils import time_cost, show_sample, mnist_dataset, device
 
-# Use CUDA + GradScaler + autocast + batch_size:64
-# Function took 5m 23s to execute.
-# Model Accuracy =:0.9912
 
 # ====================== Lord Dataset ======================
 # 初始化梯度尺度器
@@ -60,7 +57,7 @@ class cnn_net(nn.Module):
 model = cnn_net()
 model.to(device=device)
 
-criterion = nn.CrossEntropyLoss()
+loss_func = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.5)
 
 
@@ -79,7 +76,7 @@ def cnn_train(epoch):
             # 使用自动混合精度
             with autocast('cpu'):
                 outputs = model(images)
-                loss = criterion(outputs, labels)
+                loss = loss_func(outputs, labels)
 
             # 反向传播和优化
             scaler.scale(loss).backward()
@@ -133,6 +130,9 @@ def cnn_test():
 
 
 if __name__ == '__main__':
+    # # Use CUDA + GradScaler + autocast + batch_size:64
+    # # Function took 5m 23s to execute.
+    # # Model Accuracy =:0.9912
     show_sample(train_dataset)
     cnn_train(30)
     cnn_test()
