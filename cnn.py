@@ -38,6 +38,7 @@ class cnn_net(nn.Module):
         self.pooling2 = nn.MaxPool2d(2)
         self.relu2 = nn.ReLU()
 
+        self.dropout = nn.Dropout(0.1)
         self.fc = nn.Linear(512, 10)  # 全连接
 
     def forward(self, x):
@@ -48,6 +49,7 @@ class cnn_net(nn.Module):
         x = self.conv2(x)
         x = self.pooling2(x)
         x = self.relu2(x)
+        x = self.dropout(x)
         x = x.view(batch_size, -1)
         x = self.fc(x)
 
@@ -130,9 +132,10 @@ def cnn_test():
 
 
 if __name__ == '__main__':
-    # # Use CUDA + GradScaler + autocast + batch_size:64
-    # # Function took 5m 23s to execute.
-    # # Model Accuracy =:0.9912
+    # Use CUDA + GradScaler + autocast + batch_size:64
+    # Function took 5m 23s to execute.
+    # Model Accuracy =:0.9912
+    # Use dropout method -> 0.9917
     show_sample(train_dataset)
-    cnn_train(30)
+    cnn_train(50)
     cnn_test()
