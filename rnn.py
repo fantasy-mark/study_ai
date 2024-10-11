@@ -7,7 +7,7 @@
 import matplotlib.pyplot as plt
 import torch
 import torchvision.transforms as transforms
-from torch import nn
+from torch import nn, optim
 
 from utils import mnist_dataset, show_sample, device, time_cost
 
@@ -42,8 +42,7 @@ model.to(device=device)
 
 # 设置使用GPU
 loss_func = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-
+optimizer = torch.optim.AdamW(model.parameters(), lr=0.001)
 
 # Epoch 9 - Training loss: 0.3819831430610182
 # Function took 1m 32s to execute.

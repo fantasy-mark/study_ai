@@ -30,16 +30,15 @@ class cnn_net(nn.Module):
     def __init__(self):
         # see cnn_process_tips.png
         super().__init__()
-        self.conv1 = nn.Conv2d(1, 16, kernel_size=5)  # 卷积1
-        self.pooling1 = nn.MaxPool2d(2)  # 最大池化
-        self.relu1 = nn.ReLU()  # 激活
-
+        self.conv1 = nn.Conv2d(1, 16, kernel_size=5)    # 卷积1
+        self.pooling1 = nn.MaxPool2d(2)                 # 最大池化
+        self.relu1 = nn.ReLU()                          # 激活
         self.conv2 = nn.Conv2d(16, 32, kernel_size=5)
         self.pooling2 = nn.MaxPool2d(2)
         self.relu2 = nn.ReLU()
 
-        self.dropout = nn.Dropout(0.1)
-        self.fc = nn.Linear(512, 10)  # 全连接
+        self.dropout = nn.Dropout(0.1)                  # 正则化
+        self.fc = nn.Linear(512, 10)                    # 全连接
 
     def forward(self, x):
         batch_size = x.size(0)
@@ -56,11 +55,9 @@ class cnn_net(nn.Module):
         return x
 
 
-model = cnn_net()
-model.to(device=device)
-
+model = cnn_net().to(device=device)
 loss_func = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.5)
+optimizer = torch.optim.AdamW(model.parameters(), lr=0.001)
 
 
 # ====================== Train ======================
